@@ -1,0 +1,25 @@
+[Unit]
+Description=pihole daemon
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --rm \
+  --name {{ pihole_service_name }} \
+  --net {{ pihole_network }} \
+  {% if (pihole_container_ip is defined) and (pihole_container_ip | length > 0) %}
+  --ip {{ pihole_container_ip }} \
+  {% endif %}
+  {% for port in pihole_port_mappings %}-p {{ port }} {% endfor %} \
+  -m {{ pihole_host_memory }} \
+  -v {{ pihole_host_pihole_dir }}:/etc/pihole \
+  -v {{ pihole_host_dnsmasq_dir }}:/etc/dnsmasq.d \
+  {% if (pihole_webpassword is defined) and (pihole_webpassword | length > 0) %}
+  -e WEBPASSWORD="{{ pihole_webpassword }}" \
+  {% endif %}
+  {{ pihole_docker_image }}
+ExecStop=/usr/bin/docker stop -t 10 {{ pihole_service_name }}
+
+[Install]
+WantedBy=default.target

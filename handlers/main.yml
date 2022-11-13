@@ -1,0 +1,21 @@
+---
+
+- name: pihole restart
+  become: True
+  shell: systemctl daemon-reload
+  notify: pihole restart service
+
+- name: pihole restart service
+  service:
+    name: '{{ pihole_service_name }}'
+    state: restarted
+    enabled: True
+
+- name: "reload systemctl daemon"
+  become: True
+  shell: systemctl daemon-reload
+  notify: reset failed
+
+- name: "reset failed"
+  become: True
+  shell: systemctl reset-failed

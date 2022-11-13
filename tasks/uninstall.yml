@@ -1,0 +1,22 @@
+---
+
+- name: Stop and disable service
+  systemd:
+    name: "{{ pihole_service_name }}"
+    state: stopped
+    enabled: True
+  ignore_errors: True
+
+- name: Remove configuration directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ pihole_host_pihole_dir }}"
+    - "{{ pihole_host_dnsmasq_dir }}"
+
+- name: Remove systemd service
+  file:
+    dest: "/etc/systemd/system/{{ pihole_service_name }}.service"
+    state: absent
+  notify: reload systemctl daemon
