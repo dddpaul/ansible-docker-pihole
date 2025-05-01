@@ -16,7 +16,7 @@ ExecStart=/usr/bin/docker run --rm \
   -v {{ pihole_host_pihole_dir }}:/etc/pihole \
   -v {{ pihole_host_dnsmasq_dir }}:/etc/dnsmasq.d \
   {% if (pihole_webpassword is defined) and (pihole_webpassword | length > 0) %}
-  -e WEBPASSWORD="{{ pihole_webpassword }}" \
+  -e FTLCONF_webserver_api_password="{{ pihole_webpassword }}" \
   {% endif %}
   {{ pihole_docker_image }}
 ExecStop=/usr/bin/docker stop -t 10 {{ pihole_service_name }}
