@@ -12,3 +12,12 @@ pihole_port_mappings:
   - 53:53/udp
   - 53:53/tcp
   - 8080:80/tcp
+
+# Conditional DNS forwarding — queries for these TLDs are answered by
+# pihole_conditional_forward_server instead of Pi-hole's default upstreams.
+# An empty domain list removes the drop-in. .рф is given in punycode
+# (xn--p1ai) because resolvers query IDN TLDs as A-labels.
+pihole_conditional_forward_server: 77.88.8.8  # Yandex public DNS
+pihole_conditional_forward_domains:
+  - ru
+  - xn--p1ai  # .рф
