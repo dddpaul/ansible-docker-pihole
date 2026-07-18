@@ -18,21 +18,20 @@ pihole_port_mappings:
   - 53:53/tcp
   - 8080:80/tcp
 
-pihole_conditional_forward_server: 77.88.8.8   # Yandex public DNS
-pihole_conditional_forward_domains:
-  - ru
-  - xn--p1ai   # .рф
+pihole_conditional_forward_server: ""   # upstream IP for the domains below
+pihole_conditional_forward_domains: []  # domains/TLDs to route to that upstream
 ```
 
 ## Conditional DNS forwarding
 
-Queries for the TLDs in `pihole_conditional_forward_domains` are answered by
-`pihole_conditional_forward_server` instead of Pi-hole's default upstreams. The
-role renders these as `server=/<tld>/<server>` lines into a dnsmasq drop-in
+Route queries for specific domains or TLDs to a dedicated upstream instead of
+Pi-hole's default resolvers. Set both `pihole_conditional_forward_server` (an
+upstream IP) and `pihole_conditional_forward_domains` (a list of domains): the
+role renders `server=/<domain>/<server>` lines into a dnsmasq drop-in
 (`02-conditional-forward.conf`) in the bind-mounted `dnsmasq.d` directory and
-restarts the container.
+restarts the container. Both are empty by default, so nothing is forwarded
+until you set them (typically from inventory).
 
-By default `.ru` and `.рф` resolve via Yandex DNS (`77.88.8.8`). `.рф` is listed
-in **punycode** (`xn--p1ai`), not Cyrillic, because resolvers convert IDN TLDs
-to A-labels before the query reaches DNS — a literal `рф` rule would never
-match. Set `pihole_conditional_forward_domains: []` to remove the drop-in.
+Write IDN TLDs in **punycode** (A-label) form — resolvers convert IDN TLDs to
+A-labels before the query reaches DNS, so a literal Unicode rule would never
+match. Clearing either variable removes the drop-in.

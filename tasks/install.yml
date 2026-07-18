@@ -23,12 +23,16 @@
   template:
     src: conditional-forward.conf.j2
     dest: "{{ pihole_host_dnsmasq_dir }}/02-conditional-forward.conf"
-  when: pihole_conditional_forward_domains | length > 0
+  when:
+    - pihole_conditional_forward_domains | length > 0
+    - pihole_conditional_forward_server | length > 0
   notify: pihole restart
 
 - name: Remove conditional DNS forwarding drop-in when disabled
   file:
     path: "{{ pihole_host_dnsmasq_dir }}/02-conditional-forward.conf"
     state: absent
-  when: pihole_conditional_forward_domains | length == 0
+  when: >-
+    pihole_conditional_forward_domains | length == 0
+    or pihole_conditional_forward_server | length == 0
   notify: pihole restart

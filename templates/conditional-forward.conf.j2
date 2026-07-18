@@ -1,9 +1,8 @@
 # Managed by Ansible (pihole role) — do not edit by hand.
 #
-# Conditional DNS forwarding: queries for the TLDs below are answered by
+# Conditional DNS forwarding: queries for the domains below are answered by
 # {{ pihole_conditional_forward_server }} instead of Pi-hole's default upstream
-# resolvers. .рф is written in punycode (xn--p1ai) because resolvers convert
-# IDN TLDs to A-labels before querying DNS.
+# resolvers. IDN TLDs must be given in punycode (A-label) form.
 {% for domain in pihole_conditional_forward_domains %}
 server=/{{ domain }}/{{ pihole_conditional_forward_server }}
 {% endfor %}
